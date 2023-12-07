@@ -1,0 +1,28 @@
+.cell {
+    display: table-cell;
+    padding-right: 25px;
+}
+form[name=edit] {
+    background: #eee;
+    border-radius: 5px;
+    padding: 10px;
+}
+#data tbody tr:hover {
+    background: #eee;
+    cursor: pointer;
+}
+.selected {
+    background: #ccc;
+}
+#msg_display {
+    text-align: center;
+    line-height: 30px;
+    display: none;
+    background: #ccc;
+    width: 100%;
+    height: 30px;
+    border-radius: 5px;
+}
+table {
+    max-width: 800px;
+}

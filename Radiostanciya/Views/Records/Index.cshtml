@@ -1,0 +1,262 @@
+﻿@using Radiostanciya.Models
+@using Radiostanciya.ViewModels
+@using Radiostanciya.ViewModels.RecordViewModels
+@model IndexViewModel
+@addTagHelper "*, Radiostanciya"
+@{
+    ViewData["Title"] = "Записи";
+}
+<h1>Записи</h1>
+<form method="get">
+    <div class="form-inline">
+        @*<label class="control-label">Номер: </label>
+            @Html.TextBox("Id", Model.IndexViewModel.SelectedId, htmlAttributes: new { @class = "form-control" })*@
+
+        <label class="control-label">Название: </label>
+        @Html.TextBox("Name", Model.FilterViewModel.SelectedName,
+                htmlAttributes: new { @class = "form-control" })
+        <label class="control-label">Исполнитель: </label>
+        @Html.TextBox("Per", Model.FilterViewModel.SelectedName,
+                htmlAttributes: new { @class = "form-control" })
+        <label class="control-label">Альбом: </label>
+        @Html.TextBox("Album", Model.FilterViewModel.SelectedName,
+                htmlAttributes: new { @class = "form-control" })<br>
+        <label class="control-label">Сотрудник: </label>
+        @Html.TextBox("Emp", Model.FilterViewModel.SelectedName,
+                htmlAttributes: new { @class = "form-control" })
+
+
+        <input type="submit" value="Поиск" class="btn btn-default" />
+    </div>
+</form>
+<br />
+<div class="cell">
+    <table class="table" id="data">
+        <thead>
+            <tr>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@(Model.SortViewModel.IdSort)"
+                       asp-route-name="@(Model.FilterViewModel.SelectedName)"
+                       asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Номер</a>
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.NameSort)"
+                       asp-route-name="@(Model.FilterViewModel.SelectedName)"
+                       asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Название</a>
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.PerformerSort)"
+                       asp-route-name="@(Model.FilterViewModel.SelectedName)"
+                       asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Исполнитель</a>
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.AlbumSort)"
+                       asp-route-name="@(Model.FilterViewModel.SelectedName)"
+                       asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Альбом</a>
+                </th>
+                <th>
+                    Год
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.GenreSort)"
+                       asp-route-name="@(Model.FilterViewModel.SelectedName)"
+                       asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Жанр</a>
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.DateSort)"
+                       asp-route-name="@(Model.FilterViewModel.SelectedName)"
+                       asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Дата записи</a>
+                </th>
+                <th>
+                    Продолжительность (мин)
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.EmployeeSort)"
+                       asp-route-name="@(Model.FilterViewModel.SelectedName)"
+                       asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Сотрудник</a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Record u in Model.Records)
+            {
+                <tr>
+                    <td>@u.Id</td>
+                    <td>@u.Name</td>
+                    <td>@Model.Performers.First(p => p.Id == u.PerformerId).Name</td>
+                    <td>@u.Album</td>
+                    <td>@u.Age</td>
+                    <td>@Model.Genres.First(p => p.Id == u.GenreId).Name</td>
+                    <td>@u.DFormat(u.RecordDate)</td>
+                    <td>@u.TimeMin</td>
+                    <td>@Model.Employees.First(p => p.Id == u.EmployeeId).Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <page-link page-model="@Model.PageViewModel" page-action="Index"
+               page-url-name="@(Model.FilterViewModel.SelectedName)"
+               page-url-company="@(Model.FilterViewModel.SelectedId)"
+               page-url-sortorder="@(Model.SortViewModel.Current)"></page-link>
+</div>
+<form name="edit" class="cell">
+    <h3>Редактирование данных</h3><br />
+    <table class="table">
+        <tr>
+            <td><label class="control-label">Номер</label></td>
+            <td colspan="2"><input type="text" name="number" readonly class="form-control" /></td>
+        </tr>
+        <tr>
+            <td><label class="control-label">Название</label></td>
+            <td colspan="2"><input type="text" name="name" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td><label class="control-label">Исполнитель</label></td>
+            <td colspan="2">
+                <select name="per">
+                    @foreach (Performer b in Model.Performers)
+                    {
+                        <option id="@b.Id">@b.Name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td><label class="control-label">Альбом</label></td>
+            <td colspan="2"><input type="text" name="album" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td><label class="control-label">Год</label></td>
+            <td colspan="2"><input type="number" name="year" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td><label class="control-label">Жанр</label></td>
+            <td colspan="2">
+                <select name="genre">
+                    @foreach (Genre b in Model.Genres)
+                    {
+                        <option id="@b.Id">@b.Name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td><label class="control-label">Дата записи</label></td>
+            <td colspan="2"><input type="date" name="d" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td><label class="control-label">Продолжительность</label></td>
+            <td colspan="2"><input type="number" name="t" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td><label class="control-label">Сотрудник</label></td>
+            <td colspan="2">
+                <select name="emp">
+                    @foreach (Employee b in Model.Employees)
+                    {
+                        <option id="@b.Id">@b.Name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td><input type="button" name="add" value="Добавить" class="btn btn-default" /></td>
+            <td><input type="button" name="del" value="Удалить" class="btn btn-default" /></td>
+            <td><input type="button" name="upd" value="Обновить" class="btn btn-default" /></td>
+        </tr>
+    </table>
+    <div id="msg_display"></div>
+</form>
+<script type="text/javascript">
+    $(function () {
+        function setSelectedRecord() {
+            var selectedId = localStorage.getItem('selectedRecordId');
+            if (selectedId) {
+                var selectedRow = $('#data tbody tr').filter(function () {
+                    return $(this).children('td')[0].textContent === selectedId;
+                });
+                if (selectedRow.length > 0) {
+                    selectedRow.addClass('selected');
+                    updateFormFields(selectedRow);
+                }
+            }
+        }
+
+        function updateFormFields(selectedRow) {
+            $('input[name=number]').val(selectedRow.children('td')[0].textContent);
+            $('input[name=name]').val(selectedRow.children('td')[1].textContent);
+            $('select[name=per]').val(selectedRow.children('td')[2].textContent);
+            $('input[name=album]').val(selectedRow.children('td')[3].textContent);
+            $('input[name=year]').val(selectedRow.children('td')[4].textContent);
+            $('select[name=genre]').val(selectedRow.children('td')[5].textContent);
+            $('input[name=d]').val(selectedRow.children('td')[6].textContent);
+            $('input[name=t]').val(selectedRow.children('td')[7].textContent);
+            $('select[name=emp]').val(selectedRow.children('td')[8].textContent);
+        }
+
+        setSelectedRecord();
+
+        $('#data tbody tr').click(function () {
+            $('#data tbody tr').removeClass('selected');
+            updateFormFields($(this));
+            $(this).addClass('selected');
+            localStorage.setItem('selectedRecordId', $(this).children('td')[0].textContent);
+        });
+
+        $('input[name=add]').click(function () {
+            $.getJSON('/Records/Insert?empId=' + $('select[name=emp]').find(":selected").attr("id") +
+                '&date=' + $('input[name=d]').val() +
+                '&time=' + $('input[name=t]').val() +
+                '&end=' + $('input[name=end]').val() +
+                '&year=' + $('input[name=year]').val() +
+                '&album=' + $('input[name=album]').val() +
+                '&name=' + $('input[name=name]').val() +
+                '&genreId=' + $('select[name=genre]').find(":selected").attr("id") +
+                '&performerId=' + $('select[name=per]').find(":selected").attr("id")
+                , null);
+            getMsg('Добавлено');
+        });
+
+        $('input[name=del]').click(function () {
+            $.getJSON('/Records/Delete?id=' + $('input[name=number]').val(), null);
+            $('.selected').remove();
+            getMsg('Удалено');
+        });
+
+        $('input[name=upd]').click(function () {
+            $.getJSON('/Records/Update?id=' + $('input[name=number]').val() +
+                '&empId=' + $('select[name=emp]').find(":selected").attr("id") +
+                '&date=' + $('input[name=d]').val() +
+                '&time=' + $('input[name=t]').val() +
+                '&end=' + $('input[name=end]').val() +
+                '&year=' + $('input[name=year]').val() +
+                '&album=' + $('input[name=album]').val() +
+                '&name=' + $('input[name=name]').val() +
+                '&genreId=' + $('select[name=genre]').find(":selected").attr("id") +
+                '&performerId=' + $('select[name=per]').find(":selected").attr("id"), null);
+            $('.selected').children('td')[1].textContent = $('input[name=name]').val();
+            $('.selected').children('td')[2].textContent = $('select[name=per]').val();
+            $('.selected').children('td')[3].textContent = $('input[name=album]').val();
+            $('.selected').children('td')[4].textContent = $('input[name=year]').val();
+            $('.selected').children('td')[5].textContent = $('select[name=genre]').val();
+            $('.selected').children('td')[6].textContent = $('input[name=d]').val();
+            $('.selected').children('td')[7].textContent = $('input[name=t]').val();
+            $('.selected').children('td')[8].textContent = $('select[name=emp]').val();
+            getMsg('Обновлено');
+        });
+
+        function getMsg(msg) {
+            if (msg == undefined)
+                msg = 'Ошибка';
+            $('#msg_display').text(msg);
+            $('#msg_display').css('display', 'block');
+            $('#msg_display').fadeOut(2000, function () {
+                $('#msg_display').css('display', 'none');
+            });
+        }
+    });
+</script>
+
+
+
