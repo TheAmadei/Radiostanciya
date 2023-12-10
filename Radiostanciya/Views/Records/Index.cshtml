@@ -6,24 +6,9 @@
 @{
     ViewData["Title"] = "Записи";
 }
-<div class="modal fade" id="accessErrorModal" tabindex="-1" role="dialog" aria-labelledby="accessErrorModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="accessErrorModalLabel">Ошибка доступа</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="accessErrorModalBody">
-                У вас недостаточно прав для выполнения этого действия.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-            </div>
-        </div>
-    </div>
-</div>
+<head>
+</head>
+
 <h1>Записи</h1>
 <form method="get">
     <div class="form-inline">
@@ -48,6 +33,13 @@
     </div>
 </form>
 <br />
+<div class="cell">
+    @if (User.IsInRole("Admin"))
+    {
+        <button id="editButton" class="btn btn-primary">Редактировать</button>
+    }
+</div>
+
 <div class="cell">
     <table class="table" id="data">
         <thead>
@@ -118,77 +110,94 @@
                page-url-company="@(Model.FilterViewModel.SelectedId)"
                page-url-sortorder="@(Model.SortViewModel.Current)"></page-link>
 </div>
-@if (User.IsInRole("Admin"))
-{
-    <form name="edit" class="cell">
-    <h3>Редактирование данных</h3><br />
-    <table class="table">
-        <tr>
-            <td><label class="control-label">Номер</label></td>
-            <td colspan="2"><input type="text" name="number" readonly class="form-control" /></td>
-        </tr>
-        <tr>
-            <td><label class="control-label">Название</label></td>
-            <td colspan="2"><input type="text" name="name" class="form-control" /></td>
-        </tr>
-        <tr>
-            <td><label class="control-label">Исполнитель</label></td>
-            <td colspan="2">
-                <select name="per">
-                    @foreach (Performer b in Model.Performers)
-                    {
-                        <option id="@b.Id">@b.Name</option>
-                    }
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td><label class="control-label">Альбом</label></td>
-            <td colspan="2"><input type="text" name="album" class="form-control" /></td>
-        </tr>
-        <tr>
-            <td><label class="control-label">Год</label></td>
-            <td colspan="2"><input type="number" name="year" class="form-control" /></td>
-        </tr>
-        <tr>
-            <td><label class="control-label">Жанр</label></td>
-            <td colspan="2">
-                <select name="genre">
-                    @foreach (Genre b in Model.Genres)
-                    {
-                        <option id="@b.Id">@b.Name</option>
-                    }
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td><label class="control-label">Дата записи</label></td>
-            <td colspan="2"><input type="date" name="d" class="form-control" /></td>
-        </tr>
-        <tr>
-            <td><label class="control-label">Продолжительность</label></td>
-            <td colspan="2"><input type="number" name="t" class="form-control" /></td>
-        </tr>
-        <tr>
-            <td><label class="control-label">Сотрудник</label></td>
-            <td colspan="2">
-                <select name="emp">
-                    @foreach (Employee b in Model.Employees)
-                    {
-                        <option id="@b.Id">@b.Name</option>
-                    }
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td><input type="button" name="add" value="Добавить" class="btn btn-default" /></td>
-            <td><input type="button" name="del" value="Удалить" class="btn btn-default" /></td>
-            <td><input type="button" name="upd" value="Обновить" class="btn btn-default" /></td>
-        </tr>
-    </table>
-    <div id="msg_display"></div>
-</form>
-}
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Редактирование/Удаление записи</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Форма для редактирования/удаления записи -->
+                <form id="editForm" name="edit">
+                    <h3>Редактирование данных</h3><br />
+                    <table class="table">
+                        <tr>
+                            <td><label class="control-label">Номер</label></td>
+                            <td colspan="2"><input type="text" name="number" readonly class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Название</label></td>
+                            <td colspan="2"><input type="text" name="name" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Исполнитель</label></td>
+                            <td colspan="2">
+                                <select name="per">
+                                    @foreach (Performer b in Model.Performers)
+                                    {
+                                        <option id="@b.Id">@b.Name</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Альбом</label></td>
+                            <td colspan="2"><input type="text" name="album" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Год</label></td>
+                            <td colspan="2"><input type="number" name="year" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Жанр</label></td>
+                            <td colspan="2">
+                                <select name="genre">
+                                    @foreach (Genre b in Model.Genres)
+                                    {
+                                        <option id="@b.Id">@b.Name</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Дата записи</label></td>
+                            <td colspan="2"><input type="date" name="d" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Продолжительность</label></td>
+                            <td colspan="2"><input type="number" name="t" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Сотрудник</label></td>
+                            <td colspan="2">
+                                <select name="emp">
+                                    @foreach (Employee b in Model.Employees)
+                                    {
+                                        <option id="@b.Id">@b.Name</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="button" name="add" value="Добавить" class="btn btn-default" /></td>
+                            <td><input type="button" name="del" value="Удалить" class="btn btn-default" /></td>
+                            <td><input type="button" name="upd" value="Обновить" class="btn btn-default" /></td>
+                        </tr>
+                    </table>
+                    <div id="msg_display"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
     $(function () {
         function setSelectedRecord() {
@@ -302,6 +311,9 @@
                 $('#msg_display').css('display', 'none');
             });
         }
+        $('#editButton').click(function () {
+            $('#editModal').modal('show');
+        });
     });
 </script>
 
