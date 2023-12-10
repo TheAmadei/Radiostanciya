@@ -1,0 +1,22 @@
+﻿@using Radiostanciya.Models
+@using Radiostanciya.ViewModels
+@using Radiostanciya.ViewModels.Account.Login;
+@addTagHelper "*, Radiostanciya"
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Logout</title>
+</head>
+<body>
+    <h2>Logout</h2>
+    <p>Are you sure you want to logout?</p>
+    <form asp-controller="Account" asp-action="Logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+</body>
+</html>

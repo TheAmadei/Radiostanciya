@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using Radiostanciya.ViewModels.RecordViewModels;
 
 namespace Radiostanciya.Controllers
 {
+    [Authorize]
     public class RecordsController : Controller
     {
 
@@ -23,6 +25,8 @@ namespace Radiostanciya.Controllers
         public async Task<IActionResult> Index(int? id, string name, string per, string album, string emp,  int page = 0,
             SortState sortOrder = SortState.IdAsc)
         {
+            ViewData["IsAdmin"] = User.IsInRole("Admin");
+
             int pageSize = 10;  // количество элементов на странице
 
             IQueryable<Record> source = db.Records;
@@ -116,8 +120,10 @@ namespace Radiostanciya.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Insert(string name, int performerId, string album, int year, int genreId, string date, int time, int empId)
         {
+
             Record p = new Record
             {
                 EmployeeId = empId,
@@ -136,6 +142,7 @@ namespace Radiostanciya.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             Record p = null;
@@ -151,6 +158,7 @@ namespace Radiostanciya.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Update(int id, string name, int performerId, string album, int year, int genreId, string date, int time, int empId)
         {
             Record p = null;

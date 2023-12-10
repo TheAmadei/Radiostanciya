@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Radiostanciya.Models
 {
-    public class ApplContext : DbContext
+    public class ApplContext : IdentityDbContext<User>
     {
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Performer> Performers { get; set; }

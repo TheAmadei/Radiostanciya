@@ -1,0 +1,36 @@
+﻿@using Radiostanciya.ViewModels.Account.Register
+@model RegisterViewModel
+@addTagHelper "*, Radiostanciya"
+@{
+    ViewData["Title"] = "Регистрация";
+    Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/css/account.css" />
+</head>
+<body>
+    <div class="wrapper">
+        <form asp-action="Register" class="p-3 mt-3" method="post">
+            <div class="form-field d-flex align-items-center">
+                <span class="far fa-user"></span>
+                <input type="text" name="UserName" id="UserName" placeholder="Username">
+            </div>
+            <div class="form-field d-flex align-items-center">
+                <span class="fas fa-key"></span>
+                <input type="password" name="Password" id="pwd" placeholder="Password">
+            </div>
+
+            <div class="form-field d-flex align-items-center">
+                <span class="fas fa-key"></span>
+                <input type="password" name="ConfirmPassword" id="pwd" placeholder="Re-password">
+            </div>
+            <input type="submit" name="signup" class="btn mt-3" value="Sign-up">
+        </form>
+    </div>
+</body>
+</html>
+
+

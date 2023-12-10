@@ -9,6 +9,8 @@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
         <link rel="stylesheet" href="~/css/styles.css" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlX4aZl8+UqD2Ql3Xj" crossorigin="anonymous">
 
         <script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
         <script type="text/javascript" src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
@@ -36,15 +38,44 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Genres" asp-action="Index">Жанры</a></li>
-                    <li><a asp-area="" asp-controller="Employees" asp-action="Index">Сотрудники</a></li>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li><a asp-area="" asp-controller="Employees" asp-action="Index">Сотрудники</a></li>
+                    }
                     <li><a asp-area="" asp-controller="Performers" asp-action="Index">Исполнители</a></li>
-                    <li><a asp-area="" asp-controller="Positions" asp-action="Index">Должности</a></li>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li><a asp-area="" asp-controller="Positions" asp-action="Index">Должности</a></li>
+                    }
                     <li><a asp-area="" asp-controller="Records" asp-action="Index">Записи</a></li>
                     <li><a asp-area="" asp-controller="Scheudules" asp-action="Index">Расписание</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li><a>Hello, @User.Identity.Name!</a></li>
+                        <li><a href="javascript:void(0);" id="logout">Выход</a></li>
+                    }
+                    else
+                    {
+                        <li><a asp-area="" asp-controller="Account" asp-action="Login">Вход</a></li>
+                        <li><a asp-area="" asp-controller="Account" asp-action="Register">Регистрация</a></li>
+                    }
                 </ul>
             </div>
         </div>
     </nav>
+    <script>
+        $(function () {
+            $('#logout').click(function () {
+                // Выполнение выхода
+                $.post('/Account/Logout', function () {
+                    // После успешного выхода
+                    location.reload();
+                });
+            });
+        });
+    </script>
 
     <partial name="_CookieConsentPartial" />
 
@@ -55,7 +86,6 @@
             <p>&copy; 2023 - Radiostanciya</p>
         </footer>
     </div>
-
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>

@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Radiostanciya.Migrations;
 using Radiostanciya.Models;
 using Radiostanciya.ViewModels;
+using Radiostanciya.ViewModels.Account.Register;
 using Radiostanciya.ViewModels.EmployeeViewModels;
 
 namespace Radiostanciya.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class EmployeesController : Controller
     {
 
@@ -75,7 +79,7 @@ namespace Radiostanciya.Controllers
             var items = await source.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
             PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
-            IndexViewModel viewModel = new IndexViewModel
+                IndexViewModel viewModel = new IndexViewModel
             {
                 PageViewModel = pageViewModel,
                 SortViewModel = new SortViewModel(sortOrder),
@@ -88,6 +92,7 @@ namespace Radiostanciya.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public ActionResult Insert(string name, int age, string sex, string address, string passport, int posId)
         {
@@ -106,6 +111,7 @@ namespace Radiostanciya.Controllers
             return data;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public ActionResult Delete(int id)
         {
@@ -121,6 +127,7 @@ namespace Radiostanciya.Controllers
             return data;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public ActionResult Update(int id, string name, string age, string sex, string address, string passport, int posId)
         {

@@ -7,6 +7,8 @@ using Radiostanciya.Models;
 using Microsoft.AspNetCore.Mvc;
 using Radiostanciya.Middleware;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Radiostanciya.Data;
 
 namespace Radiostanciya
 {
@@ -25,8 +27,17 @@ namespace Radiostanciya
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplContext>(options => options.UseSqlServer(connection));
 
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<ApplContext>()
+                .AddDefaultTokenProviders();
+
             services.AddSession();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireNonAlphanumeric = false;
+            });
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -58,6 +69,7 @@ namespace Radiostanciya
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseStaticFiles();
             app.UseSession();
             app.UseResponseCaching();
@@ -69,6 +81,7 @@ namespace Radiostanciya
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }

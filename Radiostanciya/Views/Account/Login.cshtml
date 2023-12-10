@@ -1,0 +1,31 @@
+﻿@using Radiostanciya.Models
+@using Radiostanciya.ViewModels
+@using Radiostanciya.ViewModels.Account.Login;
+@model LoginViewModel
+@addTagHelper "*, Radiostanciya"
+@{
+    ViewData["Title"] = "Регистрация";
+    Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/css/account.css" />
+</head>
+<body>
+    <div class="wrapper">
+        <form asp-action="Login" class="p-3 mt-3" method="post">
+            <div class="form-field d-flex align-items-center">
+                <span class="far fa-user"></span>
+                <input type="text" name="UserName" id="UserName" placeholder="Username">
+            </div>
+            <div class="form-field d-flex align-items-center">
+                <span class="fas fa-key"></span>
+                <input type="password" name="Password" id="pwd" placeholder="Password">
+            </div>
+            <button class="btn mt-3">Login</button>
+        </form>
+    </div>
+</body>
+</html>

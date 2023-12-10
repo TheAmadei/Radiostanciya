@@ -59,7 +59,9 @@
                page-url-company="@(Model.FilterViewModel.SelectedId)"
                page-url-sortorder="@(Model.SortViewModel.Current)"></page-link>
 </div>
-<form name="edit" class="cell">
+@if (User.IsInRole("Admin"))
+{
+    <form name="edit" class="cell">
     <h3>Редактирование данных</h3><br />
     <table class="table">
         <tr>
@@ -97,6 +99,7 @@
     </table>
     <div id="msg_display"></div>
 </form>
+}
 <script type="text/javascript">
     $(function () {
         function setSelectedRecord() {
