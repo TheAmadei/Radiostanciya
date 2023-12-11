@@ -73,7 +73,9 @@ namespace Radiostanciya.Controllers
             return View(viewModel);
         }
 
+
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Insert(string name, string description)
         {
             Performer p = new Performer
@@ -88,6 +90,7 @@ namespace Radiostanciya.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             Performer p = null;
@@ -103,6 +106,7 @@ namespace Radiostanciya.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Update(int id, string name, string desc)
         {
             Performer p = null;

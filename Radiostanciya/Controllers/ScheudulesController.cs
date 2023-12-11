@@ -93,6 +93,7 @@ namespace Radiostanciya.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             Schedule p = null;

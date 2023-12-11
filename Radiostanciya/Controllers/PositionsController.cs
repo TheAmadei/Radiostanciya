@@ -87,6 +87,7 @@ namespace Radiostanciya.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Insert(string name, string sal, string res, string req)
         {
             Position p = new Position
@@ -103,6 +104,7 @@ namespace Radiostanciya.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             Position p = null;
@@ -118,6 +120,7 @@ namespace Radiostanciya.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Update(int id, string name, string sal, string res, string req)
         {
             Position p = null;
