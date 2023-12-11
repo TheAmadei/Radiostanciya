@@ -248,11 +248,15 @@ namespace Radiostanciya.Migrations
 
                     b.Property<DateTime>("End");
 
+                    b.Property<int>("RecordId");
+
                     b.Property<DateTime>("Start");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeId");
+
+                    b.HasIndex("RecordId");
 
                     b.ToTable("Schedules");
                 });
@@ -384,6 +388,11 @@ namespace Radiostanciya.Migrations
                     b.HasOne("Radiostanciya.Models.Employee", "Employee")
                         .WithMany("Scheudules")
                         .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Radiostanciya.Models.Record", "Record")
+                        .WithMany()
+                        .HasForeignKey("RecordId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

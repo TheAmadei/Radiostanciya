@@ -6,12 +6,18 @@
 @{
     ViewData["Title"] = "Расписание";
 }
+<head>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
 <h1>Расписание</h1>
 <form method="get">
     <div class="form-inline">
 
-        <label class="control-label">ФИО: </label>
+        <label class="control-label">Сотрудник: </label>
         @Html.TextBox("Name", Model.FilterViewModel.SelectedName,
+                htmlAttributes: new { @class = "form-control" })
+        <label class="control-label">Запись: </label>
+        @Html.TextBox("Record", Model.FilterViewModel.SelectedName,
                 htmlAttributes: new { @class = "form-control" })
 
 
@@ -22,7 +28,7 @@
 <div class="cell">
     @if (User.IsInRole("Admin"))
     {
-        <button id="editButton" class="btn btn-primary">Редактировать</button>
+        <button id="editButton" class="btn btn-primary">Управление</button>
     }
 </div>
 <div class="cell">
@@ -41,6 +47,11 @@
                        asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Сотрудник</a>
                 </th>
                 <th>
+                    <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.RecordSort)"
+                       asp-route-name="@(Model.FilterViewModel.SelectedName)"
+                       asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Запись</a>
+                </th>
+                <th>
                     Дата
                 </th>
                 <th>
@@ -54,7 +65,13 @@
         <tbody>
             @foreach (Schedule u in Model.Schedules)
             {
-                <tr><td>@u.Id</td><td>@Model.Employees.First(p => p.Id == u.EmployeeId).Name</td><td>@u.DFormat(u.Date)</td><td>@u.TFormat(u.Start)</td><td>@u.TFormat(u.End)</td></tr>
+                <tr>
+                    <td>@u.Id</td>
+                    <td>@Model.Employees.First(p => p.Id == u.EmployeeId).Name</td>
+                    <td>@Model.Records.First(p => p.Id == u.RecordId).Name</td>
+                    <td>@u.DFormat(u.Date)</td><td>@u.TFormat(u.Start)</td>
+                    <td>@u.TFormat(u.End)</td>
+                </tr>
             }
         </tbody>
     </table>
@@ -68,14 +85,14 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Редактирование/Удаление записи</h5>
+                <h5 class="modal-title" id="editModalLabel">Редактирование/Удаление/Добавление записи</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <form id="editForm" name="edit">
-                    <h3>Редактирование данных</h3><br />
+                    <h3>Управление данными</h3><br />
                     <table class="table">
                         <tr>
                             <td><label class="control-label">Номер</label></td>
@@ -86,6 +103,17 @@
                             <td colspan="2">
                                 <select name="emp">
                                     @foreach (Employee b in Model.Employees)
+                                    {
+                                        <option id="@b.Id">@b.Name</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Запись</label></td>
+                            <td colspan="2">
+                                <select name="record">
+                                    @foreach (Record b in Model.Records)
                                     {
                                         <option id="@b.Id">@b.Name</option>
                                     }
@@ -138,9 +166,10 @@
         function updateFormFields(selectedRow) {
             $('input[name=number]').val(selectedRow.children('td')[0].textContent);
             $('select[name=emp]').val(selectedRow.children('td')[1].textContent);
-            $('input[name=d]').val(selectedRow.children('td')[2].textContent);
-            $('input[name=start]').val(selectedRow.children('td')[3].textContent);
-            $('input[name=end]').val(selectedRow.children('td')[4].textContent);
+            $('select[name=record]').val(selectedRow.children('td')[2].textContent);
+            $('input[name=d]').val(selectedRow.children('td')[3].textContent);
+            $('input[name=start]').val(selectedRow.children('td')[4].textContent);
+            $('input[name=end]').val(selectedRow.children('td')[5].textContent);
         }
 
         setSelectedRecord();
@@ -159,6 +188,7 @@
                 return;
             }
             $.getJSON('/Scheudules/Insert?empId=' + $('select[name=emp]').find(":selected").attr("id") +
+                '&recordId=' + $('select[name=record]').find(":selected").attr("id") +
                 '&date=' + $('input[name=d]').val() +
                 '&start=' + $('input[name=start]').val() +
                 '&end=' + $('input[name=end]').val(), null, function () {
@@ -192,6 +222,7 @@
             }
             $.getJSON('/Scheudules/Update?id=' + $('input[name=number]').val() +
                 '&empId=' + $('select[name=emp]').find(":selected").attr("id") +
+                '&recordId=' + $('select[name=record]').find(":selected").attr("id") +
                 '&date=' + $('input[name=d]').val() +
                 '&start=' + $('input[name=start]').val() +
                 '&end=' + $('input[name=end]').val(), null, function () {
@@ -200,9 +231,10 @@
                     location.reload();
                 });
             $('.selected').children('td')[1].textContent = $('select[name=emp]').val();
-            $('.selected').children('td')[2].textContent = $('input[name=d]').val();
-            $('.selected').children('td')[3].textContent = $('input[name=start]').val();
-            $('.selected').children('td')[4].textContent = $('input[name=end]').val();
+            $('.selected').children('td')[2].textContent = $('select[name=record]').val();
+            $('.selected').children('td')[3].textContent = $('input[name=d]').val();
+            $('.selected').children('td')[4].textContent = $('input[name=start]').val();
+            $('.selected').children('td')[5].textContent = $('input[name=end]').val();
             getMsg('Обновлено');
         });
 

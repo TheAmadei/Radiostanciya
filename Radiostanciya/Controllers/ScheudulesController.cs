@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -22,7 +23,7 @@ namespace Radiostanciya.Controllers
             this.db = db;
         }
 
-        public async Task<IActionResult> Index(int? id, string name, int page = 0,
+        public async Task<IActionResult> Index(int? id, string name, string record, int page = 0,
             SortState sortOrder = SortState.IdAsc)
         {
             ViewData["IsAdmin"] = User.IsInRole("Admin");
@@ -42,6 +43,10 @@ namespace Radiostanciya.Controllers
             {
                 source = source.Where(p => db.Employees.First(r => r.Id == p.EmployeeId).Name.Contains(name));
             }
+            if (!String.IsNullOrEmpty(record))
+            {
+                source = source.Where(p => db.Records.First(r => r.Id == p.RecordId).Name.Contains(record));
+            }
 
             switch (sortOrder)
             {
@@ -53,6 +58,12 @@ namespace Radiostanciya.Controllers
                     break;
                 case SortState.IdDesc:
                     source = source.OrderByDescending(s => s.Id);
+                    break;
+                case SortState.RecordDesc:
+                    source = source.OrderByDescending(s => db.Records.First(r => r.Id == s.RecordId).Name);
+                    break;
+                case SortState.RecordAsc:
+                    source = source.OrderBy(s => db.Records.First(r => r.Id == s.RecordId).Name);
                     break;
                 default:
                     source = source.OrderBy(s => s.Id);
@@ -69,19 +80,21 @@ namespace Radiostanciya.Controllers
                 SortViewModel = new SortViewModel(sortOrder),
                 FilterViewModel = new FilterViewModel(db.Schedules.ToList(), id, name),
                 Schedules = items,
-                Employees = db.Employees
+                Employees = db.Employees,
+                Records = db.Records
             };
             return View(viewModel);
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public ActionResult Insert(int empId, string date, string start, string end)
+        public ActionResult Insert(int empId, string date, string start, string end, int recordId)
         {
             Console.WriteLine($"Insert called with empId: {empId}, date: {date}, start: {start}, end: {end}");
             Schedule p = new Schedule
             {
                 EmployeeId = empId,
+                RecordId = recordId,
                 Date = DateTime.Parse(date),
                 Start = DateTime.Parse(start),
                 End = DateTime.Parse(end)
@@ -110,13 +123,14 @@ namespace Radiostanciya.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public ActionResult Update(int id, int empId, string date, string start, string end)
+        public ActionResult Update(int id, int empId, string date, string start, string end, int recordId)
         {
             Schedule p = null;
             try
             {
                 p = db.Schedules.First(c => c.Id == id);
                 p.EmployeeId = empId;
+                p.RecordId = recordId;
                 p.Date = DateTime.Parse(date);
                 p.Start = DateTime.Parse(start);
                 p.End = DateTime.Parse(end);

@@ -13,6 +13,8 @@ namespace Radiostanciya.Models
         public DateTime End { get; set; }
         public int EmployeeId { get; set; }
         public Employee Employee { get; set; }
+        public int RecordId { get; set; }
+        public Record Record { get; set; }
 
         public string DFormat(DateTime d)
         {

@@ -9,6 +9,7 @@ namespace Radiostanciya.ViewModels.ScheuduleViewModels
     {
         public SortState IdSort { get; private set; }
         public SortState EmployeeSort { get; private set; }
+        public SortState RecordSort { get; private set; }
         public SortState Current {
             get; private set;
         }
@@ -17,6 +18,7 @@ namespace Radiostanciya.ViewModels.ScheuduleViewModels
         {
             IdSort = sortOrder == SortState.IdAsc ? SortState.IdDesc : SortState.IdAsc;
             EmployeeSort = sortOrder == SortState.EmployeeAsc ? SortState.EmployeeDesc : SortState.EmployeeAsc;
+            RecordSort = sortOrder == SortState.RecordAsc ? SortState.RecordDesc : SortState.RecordAsc;
             Current = sortOrder;
         }
     }

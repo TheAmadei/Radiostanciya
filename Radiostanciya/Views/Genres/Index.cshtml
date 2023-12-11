@@ -23,7 +23,7 @@
 <div class="cell">
     @if (User.IsInRole("Admin"))
     {
-        <button id="editButton" class="btn btn-primary">Редактировать</button>
+        <button id="editButton" class="btn btn-primary">Управление</button>
     }
 </div>
 <div class="cell">
@@ -61,14 +61,14 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Редактирование/Удаление записи</h5>
+                <h5 class="modal-title" id="editModalLabel">Редактирование/Удаление/Добавление записи</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <form id="editForm" name="edit">
-                    <h3>Редактирование данных</h3><br />
+                    <h3>Управление данными</h3><br />
                     <table class="table">
                         <tr>
                             <td><label class="control-label">Номер</label></td>

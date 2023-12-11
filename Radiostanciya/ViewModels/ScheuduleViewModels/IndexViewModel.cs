@@ -9,6 +9,7 @@ namespace Radiostanciya.ViewModels.ScheuduleViewModels
     {
             public IEnumerable<Models.Schedule> Schedules{ get; set; }
             public IEnumerable<Models.Employee> Employees { get; set; }
+            public IEnumerable<Models.Record> Records { get; set; }
             public PageViewModel PageViewModel { get; set; }
             public FilterViewModel FilterViewModel { get; set; }
             public SortViewModel SortViewModel { get; set; }

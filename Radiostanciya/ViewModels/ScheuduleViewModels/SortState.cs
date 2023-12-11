@@ -10,6 +10,8 @@ namespace Radiostanciya.ViewModels.ScheuduleViewModels
         IdAsc,
         IdDesc,
         EmployeeAsc,
-        EmployeeDesc
+        EmployeeDesc,
+        RecordAsc,
+        RecordDesc,
     };
 }
