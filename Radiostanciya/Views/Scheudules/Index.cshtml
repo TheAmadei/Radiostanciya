@@ -79,38 +79,38 @@
                 <form id="editForm" name="edit">
                     <h3>Редактирование данных</h3><br />
                     <table class="table">
-        <tr>
-            <td><label class="control-label">Номер</label></td>
-            <td colspan="2"><input type="text" name="number" readonly class="form-control" /></td>
-        </tr>
-        <tr>
-            <td><label class="control-label">Сотрудник</label></td>
-            <td colspan="2">
-                <select name="emp">
-                    @foreach (Employee b in Model.Employees)
-                    {
-                        <option id="@b.Id">@b.Name</option>
-                    }
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td><label class="control-label">Дата</label></td>
-            <td colspan="2"><input type="date" name="d" class="form-control" /></td>
-        </tr>
-        <tr>
-            <td><label class="control-label">Время начала</label></td>
-            <td colspan="2"><input type="time" name="start" class="form-control" /></td>
-        </tr>
-        <tr>
-            <td><label class="control-label">Время окончания</label></td>
-            <td colspan="2"><input type="time" name="end" class="form-control" /></td>
-        </tr>
-        <tr>
-            <td><input type="button" name="add" value="Добавить" class="btn btn-default" /></td>
-            <td><input type="button" name="del" value="Удалить" class="btn btn-default" /></td>
-            <td><input type="button" name="upd" value="Обновить" class="btn btn-default" /></td>
-        </tr>
+                        <tr>
+                            <td><label class="control-label">Номер</label></td>
+                            <td colspan="2"><input type="text" name="number" readonly class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Сотрудник</label></td>
+                            <td colspan="2">
+                                <select name="emp">
+                                    @foreach (Employee b in Model.Employees)
+                                    {
+                                        <option id="@b.Id">@b.Name</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Дата</label></td>
+                            <td colspan="2"><input type="date" name="d" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Время начала</label></td>
+                            <td colspan="2"><input type="time" name="start" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Время окончания</label></td>
+                            <td colspan="2"><input type="time" name="end" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="button" name="add" value="Добавить" class="btn btn-default" /></td>
+                            <td><input type="button" name="del" value="Удалить" class="btn btn-default" /></td>
+                            <td><input type="button" name="upd" value="Обновить" class="btn btn-default" /></td>
+                        </tr>
                     </table>
                     <div id="msg_display"></div>
                 </form>
@@ -121,7 +121,7 @@
         </div>
     </div>
 </div>
-}
+
 <script type="text/javascript">
     $(function () {
         function setSelectedRecord() {
@@ -155,6 +155,11 @@
         });
 
         $('input[name=add]').click(function () {
+            // Проверка на админа
+            if (!isAdmin()) {
+                alert("Доступ запрещен. Только администраторы могут выполнять данное действие.");
+                return;
+            }
             $.getJSON('/Scheudules/Insert?empId=' + $('select[name=emp]').find(":selected").attr("id") +
                 '&date=' + $('input[name=d]').val() +
                 '&start=' + $('input[name=start]').val() +
@@ -167,6 +172,11 @@
         });
 
         $('input[name=del]').click(function () {
+            // Проверка на админа
+            if (!isAdmin()) {
+                alert("Доступ запрещен. Только администраторы могут выполнять данное действие.");
+                return;
+            }
             $.getJSON('/Scheudules/Delete?id=' + $('input[name=number]').val(), null, function () {
                 // Добавьте этот блок кода
                 $('#editModal').modal('hide');
@@ -177,6 +187,11 @@
         });
 
         $('input[name=upd]').click(function () {
+            // Проверка на админа
+            if (!isAdmin()) {
+                alert("Доступ запрещен. Только администраторы могут выполнять данное действие.");
+                return;
+            }
             $.getJSON('/Scheudules/Update?id=' + $('input[name=number]').val() +
                 '&empId=' + $('select[name=emp]').find(":selected").attr("id") +
                 '&date=' + $('input[name=d]').val() +
@@ -202,6 +217,12 @@
                 $('#msg_display').css('display', 'none');
             });
         }
+
+        function isAdmin() {
+            var isAdmin = '@ViewData["IsAdmin"]'.toLowerCase();
+            return isAdmin === "true";
+        }
+
         $('#editButton').click(function () {
             $('#editModal').modal('show');
         });

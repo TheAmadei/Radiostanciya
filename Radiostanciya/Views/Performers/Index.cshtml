@@ -21,6 +21,12 @@
 </form>
 <br />
 <div class="cell">
+    @if (User.IsInRole("Admin"))
+    {
+        <button id="editButton" class="btn btn-primary">Редактировать</button>
+    }
+</div>
+<div class="cell">
     <table class="table" id="data">
         <thead>
             <tr>
@@ -51,32 +57,46 @@
                page-url-company="@(Model.FilterViewModel.SelectedId)"
                page-url-sortorder="@(Model.SortViewModel.Current)"></page-link>
 </div>
-@if (User.IsInRole("Admin"))
-{
-    <form name="edit" class="cell">
-    <h3>Редактирование данных</h3><br />
-    <table class="table">
-        <tr>
-            <td><label class="control-label">Номер</label></td>
-            <td colspan="2"><input type="text" name="number" readonly class="form-control" /></td>
-        </tr>
-        <tr>
-            <td><label class="control-label">Название</label></td>
-            <td colspan="2"><input type="text" name="name" class="form-control" /></td>
-        </tr>
-        <tr>
-            <td><label class="control-label">Описание</label></td>
-            <td colspan="2"><input type="text" name="desc" class="form-control" /></td>
-        </tr>
-        <tr>
-            <td><input type="button" name="add" value="Добавить" class="btn btn-default" /></td>
-            <td><input type="button" name="del" value="Удалить" class="btn btn-default" /></td>
-            <td><input type="button" name="upd" value="Обновить" class="btn btn-default" /></td>
-        </tr>
-    </table>
-    <div id="msg_display"></div>
-</form>
-}
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Редактирование/Удаление записи</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" name="edit">
+                    <h3>Редактирование данных</h3><br />
+                    <table class="table">
+                        <tr>
+                            <td><label class="control-label">Номер</label></td>
+                            <td colspan="2"><input type="text" name="number" readonly class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Название</label></td>
+                            <td colspan="2"><input type="text" name="name" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Описание</label></td>
+                            <td colspan="2"><input type="text" name="desc" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="button" name="add" value="Добавить" class="btn btn-default" /></td>
+                            <td><input type="button" name="del" value="Удалить" class="btn btn-default" /></td>
+                            <td><input type="button" name="upd" value="Обновить" class="btn btn-default" /></td>
+                        </tr>
+                    </table>
+                    <div id="msg_display"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     $(function () {
         function setSelectedRecord() {
@@ -108,20 +128,47 @@
         });
 
         $('input[name=add]').click(function () {
+            // Проверка на админа
+            if (!isAdmin()) {
+                alert("Доступ запрещен. Только администраторы могут выполнять данное действие.");
+                return;
+            }
             $.getJSON('/Performers/Insert?name=' + $('input[name=name]').val() +
-                '&description=' + $('input[name=desc]').val(), null);
+                '&description=' + $('input[name=desc]').val(), null, function () {
+                    // Добавьте этот блок кода
+                    $('#editModal').modal('hide');
+                    location.reload();
+                });
             getMsg('Добавлено');
         });
 
         $('input[name=del]').click(function () {
-            $.getJSON('/Performers/Delete?id=' + $('input[name=number]').val(), null);
+            // Проверка на админа
+            if (!isAdmin()) {
+                alert("Доступ запрещен. Только администраторы могут выполнять данное действие.");
+                return;
+            }
+            $.getJSON('/Performers/Delete?id=' + $('input[name=number]').val(), null, function () {
+                // Добавьте этот блок кода
+                $('#editModal').modal('hide');
+                location.reload();
+            });
             $('.selected').remove();
             getMsg('Удалено');
         });
 
         $('input[name=upd]').click(function () {
+            // Проверка на админа
+            if (!isAdmin()) {
+                alert("Доступ запрещен. Только администраторы могут выполнять данное действие.");
+                return;
+            }
             $.getJSON('/Performers/Update?id=' + $('input[name=number]').val() + '&name=' + $('input[name=name]').val() +
-                '&desc=' + $('input[name=desc]').val(), null);
+                '&desc=' + $('input[name=desc]').val(), null, function () {
+                    // Добавьте этот блок кода
+                    $('#editModal').modal('hide');
+                    location.reload();
+                });
             $('.selected').children('td')[1].textContent = $('input[name=name]').val();
             $('.selected').children('td')[2].textContent = $('input[name=desc]').val();
             getMsg('Обновлено');
@@ -136,6 +183,15 @@
                 $('#msg_display').css('display', 'none');
             });
         }
+
+        function isAdmin() {
+            var isAdmin = '@ViewData["IsAdmin"]'.toLowerCase();
+            return isAdmin === "true";
+        }
+
+        $('#editButton').click(function () {
+            $('#editModal').modal('show');
+        });
     });
 </script>
 
