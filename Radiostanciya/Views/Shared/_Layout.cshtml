@@ -53,8 +53,12 @@
                 <ul class="nav navbar-nav navbar-right">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li><a>Hello, @User.Identity.Name!</a></li>
-                        <li><a href="javascript:void(0);" id="logout">Выход</a></li>
+                        <li>
+                            <form id="logoutForm" asp-controller="Account" asp-action="Logout" method="post" class="form-inline">
+                                <p class="navbar-text"> @User.Identity.Name</p>
+                                <button type="submit" class="btn btn-link navbar-btn" id="logout">Выход</button>
+                            </form>
+                        </li>
                     }
                     else
                     {
@@ -65,17 +69,6 @@
             </div>
         </div>
     </nav>
-    <script>
-        $(function () {
-            $('#logout').click(function () {
-                // Выполнение выхода
-                $.post('/Account/Logout', function () {
-                    // После успешного выхода
-                    location.reload();
-                });
-            });
-        });
-    </script>
 
     <partial name="_CookieConsentPartial" />
 
