@@ -25,6 +25,8 @@ namespace Radiostanciya.Controllers
         public async Task<IActionResult> Index(int? id, string name, int page = 0,
             SortState sortOrder = SortState.IdAsc)
         {
+            ViewData["IsAdmin"] = User.IsInRole("Admin");
+
             int pageSize = 10;  // количество элементов на странице
 
             IQueryable<Schedule> source = db.Schedules;
@@ -73,8 +75,10 @@ namespace Radiostanciya.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Insert(int empId, string date, string start, string end)
         {
+            Console.WriteLine($"Insert called with empId: {empId}, date: {date}, start: {start}, end: {end}");
             Schedule p = new Schedule
             {
                 EmployeeId = empId,
@@ -104,6 +108,7 @@ namespace Radiostanciya.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Update(int id, int empId, string date, string start, string end)
         {
             Schedule p = null;

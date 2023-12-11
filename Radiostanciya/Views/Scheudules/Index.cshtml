@@ -22,6 +22,12 @@
 </form>
 <br />
 <div class="cell">
+    @if (User.IsInRole("Admin"))
+    {
+        <button id="editButton" class="btn btn-primary">Редактировать</button>
+    }
+</div>
+<div class="cell">
     <table class="table" id="data">
         <thead>
             <tr>
@@ -59,11 +65,20 @@
                page-url-company="@(Model.FilterViewModel.SelectedId)"
                page-url-sortorder="@(Model.SortViewModel.Current)"></page-link>
 </div>
-@if (User.IsInRole("Admin"))
-{
-    <form name="edit" class="cell">
-    <h3>Редактирование данных</h3><br />
-    <table class="table">
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Редактирование/Удаление записи</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" name="edit">
+                    <h3>Редактирование данных</h3><br />
+                    <table class="table">
         <tr>
             <td><label class="control-label">Номер</label></td>
             <td colspan="2"><input type="text" name="number" readonly class="form-control" /></td>
@@ -96,9 +111,16 @@
             <td><input type="button" name="del" value="Удалить" class="btn btn-default" /></td>
             <td><input type="button" name="upd" value="Обновить" class="btn btn-default" /></td>
         </tr>
-    </table>
-    <div id="msg_display"></div>
-</form>
+                    </table>
+                    <div id="msg_display"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
 }
 <script type="text/javascript">
     $(function () {
@@ -133,26 +155,37 @@
         });
 
         $('input[name=add]').click(function () {
-            $.getJSON('/Schedules/Insert?empId=' + $('select[name=emp]').find(":selected").attr("id") +
+            $.getJSON('/Scheudules/Insert?empId=' + $('select[name=emp]').find(":selected").attr("id") +
                 '&date=' + $('input[name=d]').val() +
                 '&start=' + $('input[name=start]').val() +
-                '&end=' + $('input[name=end]').val()
-                , null);
+                '&end=' + $('input[name=end]').val(), null, function () {
+                    // Добавьте этот блок кода
+                    $('#editModal').modal('hide');
+                    location.reload();
+                });
             getMsg('Добавлено');
         });
 
         $('input[name=del]').click(function () {
-            $.getJSON('/Schedules/Delete?id=' + $('input[name=number]').val(), null);
+            $.getJSON('/Scheudules/Delete?id=' + $('input[name=number]').val(), null, function () {
+                // Добавьте этот блок кода
+                $('#editModal').modal('hide');
+                location.reload();
+            });
             $('.selected').remove();
             getMsg('Удалено');
         });
 
         $('input[name=upd]').click(function () {
-            $.getJSON('/Schedules/Update?id=' + $('input[name=number]').val() +
+            $.getJSON('/Scheudules/Update?id=' + $('input[name=number]').val() +
                 '&empId=' + $('select[name=emp]').find(":selected").attr("id") +
                 '&date=' + $('input[name=d]').val() +
                 '&start=' + $('input[name=start]').val() +
-                '&end=' + $('input[name=end]').val(), null);
+                '&end=' + $('input[name=end]').val(), null, function () {
+                    // Добавьте этот блок кода
+                    $('#editModal').modal('hide');
+                    location.reload();
+                });
             $('.selected').children('td')[1].textContent = $('select[name=emp]').val();
             $('.selected').children('td')[2].textContent = $('input[name=d]').val();
             $('.selected').children('td')[3].textContent = $('input[name=start]').val();
@@ -169,6 +202,9 @@
                 $('#msg_display').css('display', 'none');
             });
         }
+        $('#editButton').click(function () {
+            $('#editModal').modal('show');
+        });
     });
 </script>
 

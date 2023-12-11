@@ -251,7 +251,11 @@
                 '&name=' + $('input[name=name]').val() +
                 '&genreId=' + $('select[name=genre]').find(":selected").attr("id") +
                 '&performerId=' + $('select[name=per]').find(":selected").attr("id")
-                , null);
+                , null, function () {
+                    // Добавьте этот блок кода
+                    $('#editModal').modal('hide');
+                    location.reload();
+                });
             getMsg('Добавлено');
         });
 
@@ -263,7 +267,11 @@
             }
 
             // Ваш код для удаления записи
-            $.getJSON('/Records/Delete?id=' + $('input[name=number]').val(), null);
+            $.getJSON('/Records/Delete?id=' + $('input[name=number]').val(), null, function () {
+                // Добавьте этот блок кода
+                $('#editModal').modal('hide');
+                location.reload();
+            });
             $('.selected').remove();
             getMsg('Удалено');
         });
@@ -285,7 +293,11 @@
                 '&album=' + $('input[name=album]').val() +
                 '&name=' + $('input[name=name]').val() +
                 '&genreId=' + $('select[name=genre]').find(":selected").attr("id") +
-                '&performerId=' + $('select[name=per]').find(":selected").attr("id"), null);
+                '&performerId=' + $('select[name=per]').find(":selected").attr("id"), null, function () {
+                    // Добавьте этот блок кода
+                    $('#editModal').modal('hide');
+                    location.reload();
+                });
             $('.selected').children('td')[1].textContent = $('input[name=name]').val();
             $('.selected').children('td')[2].textContent = $('select[name=per]').val();
             $('.selected').children('td')[3].textContent = $('input[name=album]').val();

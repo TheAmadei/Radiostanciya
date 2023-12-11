@@ -19,7 +19,7 @@ namespace Radiostanciya.Middleware
         }
         public Task Invoke(HttpContext context, ApplContext dbContext)
         {
-            DbInitializer.Initialize(dbContext);
+            /*DbInitializer.Initialize(dbContext);*/
             return _next.Invoke(context);
 
         }
