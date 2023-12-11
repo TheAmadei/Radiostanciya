@@ -25,6 +25,8 @@ namespace Radiostanciya.Controllers
         public async Task<IActionResult> Index(int? id, string name, int page = 0,
             SortState sortOrder = SortState.IdAsc)
         {
+            ViewData["IsAdmin"] = User.IsInRole("Admin");
+
             int pageSize = 10;  // количество элементов на странице
 
             IQueryable<Genre> source = db.Genres;
