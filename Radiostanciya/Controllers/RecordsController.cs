@@ -126,7 +126,7 @@ namespace Radiostanciya.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public ActionResult Insert(string name, int performerId, string album, int year, int genreId, string date, int time, int empId)
+        public ActionResult Insert(string name, int performerId, string album, int year, int genreId, string date, int time, int empId, int rating)
         {
 
             Record p = new Record
@@ -138,7 +138,8 @@ namespace Radiostanciya.Controllers
                 Album = album,
                 GenreId = genreId,
                 RecordDate = DateTime.Parse(date),
-                TimeMin = time
+                TimeMin = time,
+                Rating = rating
             };
             db.Records.Add(p);
             db.SaveChanges();
@@ -164,7 +165,7 @@ namespace Radiostanciya.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public ActionResult Update(int id, string name, int performerId, string album, int year, int genreId, string date, int time, int empId)
+        public ActionResult Update(int id, string name, int performerId, string album, int year, int genreId, string date, int time, int empId, int rating)
         {
             Record p = null;
             try
@@ -178,6 +179,7 @@ namespace Radiostanciya.Controllers
                 p.GenreId = genreId;
                 p.RecordDate = DateTime.Parse(date);
                 p.TimeMin = time;
+                p.Rating = rating;
                 db.SaveChanges();
             }
             catch { }

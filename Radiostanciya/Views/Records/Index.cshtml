@@ -7,6 +7,22 @@
     ViewData["Title"] = "Записи";
 }
 <head>
+    <style>
+        .badge-success {
+            color: #fff;
+            background-color: #28a745
+        }
+
+        .badge-danger {
+            color: #fff;
+            background-color: #dc3545
+        }
+
+        .badge-warning {
+            color: #212529;
+            background-color: #ffc107
+        }
+    </style>
 </head>
 
 <h1>Записи</h1>
@@ -33,13 +49,6 @@
         <input type="submit" value="Поиск" class="btn btn-default" />
     </div>
 </form>
-<br />
-<div class="cell">
-    @if (User.IsInRole("Admin"))
-    {
-        <button id="editButton" class="btn btn-primary">Управление</button>
-    }
-</div>
 
 <div class="cell">
     <table class="table" id="data">
@@ -87,6 +96,9 @@
                        asp-route-name="@(Model.FilterViewModel.SelectedName)"
                        asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Сотрудник</a>
                 </th>
+                <th>
+                    Рейтинг
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -102,6 +114,26 @@
                     <td>@u.DFormat(u.RecordDate)</td>
                     <td>@u.TimeMin</td>
                     <td>@Model.Employees.First(p => p.Id == u.EmployeeId).Name</td>
+                    <td>
+                        @if (u.Rating == 5)
+                        {
+                            <span class="badge badge-pill badge-success">@u.Rating</span>
+                        }
+                        else if (u.Rating > 2)
+                        {
+                            <span class="badge badge-pill badge-danger">@u.Rating</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-pill badge-warning">@u.Rating</span>
+                        }
+                    </td>
+                    <td>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <button class="editButton btn btn-primary">Управление</button>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
@@ -184,6 +216,10 @@
                             </td>
                         </tr>
                         <tr>
+                            <td><label class="control-label">Рейтинг</label></td>
+                            <td colspan="2"><input type="number" name="rating" class="form-control" /></td>
+                        </tr>
+                        <tr>
                             <td><input type="button" name="add" value="Добавить" class="btn btn-default" /></td>
                             <td><input type="button" name="del" value="Удалить" class="btn btn-default" /></td>
                             <td><input type="button" name="upd" value="Обновить" class="btn btn-default" /></td>
@@ -246,6 +282,7 @@
             $.getJSON('/Records/Insert?empId=' + $('select[name=emp]').find(":selected").attr("id") +
                 '&date=' + $('input[name=d]').val() +
                 '&time=' + $('input[name=t]').val() +
+                '&rating=' + $('input[name=rating]').val() +
                 '&end=' + $('input[name=end]').val() +
                 '&year=' + $('input[name=year]').val() +
                 '&album=' + $('input[name=album]').val() +
@@ -254,7 +291,7 @@
                 '&performerId=' + $('select[name=per]').find(":selected").attr("id")
                 , null, function () {
                     // Добавьте этот блок кода
-                    $('#editModal').modal('hide');
+                    $('.editModal').modal('hide');
                     location.reload();
                 });
             getMsg('Добавлено');
@@ -270,7 +307,7 @@
             // Ваш код для удаления записи
             $.getJSON('/Records/Delete?id=' + $('input[name=number]').val(), null, function () {
                 // Добавьте этот блок кода
-                $('#editModal').modal('hide');
+                $('.editModal').modal('hide');
                 location.reload();
             });
             $('.selected').remove();
@@ -289,6 +326,7 @@
                 '&empId=' + $('select[name=emp]').find(":selected").attr("id") +
                 '&date=' + $('input[name=d]').val() +
                 '&time=' + $('input[name=t]').val() +
+                '&rating=' + $('input[name=rating]').val() +
                 '&end=' + $('input[name=end]').val() +
                 '&year=' + $('input[name=year]').val() +
                 '&album=' + $('input[name=album]').val() +
@@ -296,7 +334,7 @@
                 '&genreId=' + $('select[name=genre]').find(":selected").attr("id") +
                 '&performerId=' + $('select[name=per]').find(":selected").attr("id"), null, function () {
                     // Добавьте этот блок кода
-                    $('#editModal').modal('hide');
+                    $('.editModal').modal('hide');
                     location.reload();
                 });
             $('.selected').children('td')[1].textContent = $('input[name=name]').val();
@@ -324,7 +362,7 @@
                 $('#msg_display').css('display', 'none');
             });
         }
-        $('#editButton').click(function () {
+        $('.editButton').click(function () {
             $('#editModal').modal('show');
         });
     });

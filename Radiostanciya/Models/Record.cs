@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +19,11 @@ namespace Radiostanciya.Models
         public Genre Genre { get; set; }
         public DateTime RecordDate { get; set; }
         public int TimeMin { get; set; }
+
+        [Required(ErrorMessage = "Обязательное поле")]
+        [DisplayName("Рейтинг")]
+        [Range(1, 5, ErrorMessage = "От 1 до 5")]
+        public int Rating { get; set; }
         public int EmployeeId { get; set; }
         public Employee Employee { get; set; }
 
