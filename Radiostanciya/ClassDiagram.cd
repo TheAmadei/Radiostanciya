@@ -1,77 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Radiostanciya.Models.ApplContext">
-    <Position X="1" Y="4.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>IAAAAAIAAAAAAAAgAAIAAAAAGAAAAAEAAAAAAAAAAAA=</HashCode>
-      <FileName>Models\ApplContext.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Radiostanciya.Models.Employee">
-    <Position X="2.75" Y="1.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>IAACAAAAAAAABAAgAFAAAAQAAACAAAECAAAAAAAAAAA=</HashCode>
-      <FileName>Models\Employee.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Radiostanciya.Models.Genre">
-    <Position X="4.5" Y="1.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>IAACAAAAAAAgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Models\Genre.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Radiostanciya.Models.Performer">
-    <Position X="1" Y="1.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>IAACAAAAAAAgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Models\Performer.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Radiostanciya.Models.Position">
-    <Position X="8.25" Y="1.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAACACAAAAAAAAAAAAAAAAQACAIAAgAAAAAAAAAAAAA=</HashCode>
-      <FileName>Models\Position.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Radiostanciya.Models.Record">
-    <Position X="6.5" Y="1.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAACAQAACAAAIAAAAEIAAAwACQAAAAAAAAAACAACAIA=</HashCode>
-      <FileName>Models\Record.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Radiostanciya.Models.Schedule">
-    <Position X="10" Y="1.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAICAAgACCAAAAAAAAAAAAAACAAAAAABAAAAAAACAAA=</HashCode>
-      <FileName>Models\Schedule.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Radiostanciya.Controllers.EmployeesController">
-    <Position X="11.75" Y="4.75" Width="1.5" />
+    <Position X="8" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAEAAAAAQAAAAAAAAAAAAAAEAAAAAAAEAAAAAAAA=</HashCode>
       <FileName>Controllers\EmployeesController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Radiostanciya.Controllers.GenresController">
-    <Position X="11.75" Y="1.75" Width="1.5" />
+    <Position X="4.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAAEAAAAAQAAAAAAAAAAAAAAEAAAAAAAEAAAAAAAA=</HashCode>
+      <HashCode>AAQAAEAAAAAQAAAAAAAAAAAAAAFAAAAAAAEAAAAAAAA=</HashCode>
       <FileName>Controllers\GenresController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Radiostanciya.Controllers.HomeController">
-    <Position X="6.5" Y="5.75" Width="1.5" />
+    <Position X="6.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAQEACAAAAAAAAAAAAQAAAAEAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAEAAAAAAAA=</HashCode>
       <FileName>Controllers\HomeController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Radiostanciya.Controllers.PerformersController">
-    <Position X="10" Y="4.75" Width="1.5" />
+    <Position X="2.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAEAAAAAQAAAAAAAAAAAAAAEAAAAAAAEAAAAAAAA=</HashCode>
       <FileName>Controllers\PerformersController.cs</FileName>
@@ -85,14 +36,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Radiostanciya.Controllers.RecordsController">
-    <Position X="8.25" Y="4.75" Width="1.5" />
+    <Position X="6.25" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAEAAAAAQAAAAAAAAAAAAAAEAAAAAAAEAAAAAAAA=</HashCode>
       <FileName>Controllers\RecordsController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Radiostanciya.Controllers.ScheudulesController">
-    <Position X="2.75" Y="5.25" Width="1.5" />
+    <Position X="2.75" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAEAAAAAQAAAAAAAAAAAAAAEAAAAAAAEAAAAAAAA=</HashCode>
       <FileName>Controllers\ScheudulesController.cs</FileName>

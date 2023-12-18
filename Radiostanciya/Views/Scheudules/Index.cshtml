@@ -75,10 +75,28 @@
             }
         </tbody>
     </table>
-    <page-link page-model="@Model.PageViewModel" page-action="Index"
-               page-url-name="@(Model.FilterViewModel.SelectedName)"
-               page-url-company="@(Model.FilterViewModel.SelectedId)"
-               page-url-sortorder="@(Model.SortViewModel.Current)"></page-link>
+    <div class="pagination">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                @if (Model.PageViewModel.TotalPages > 1)
+                {
+                    int startPage = Model.PageViewModel.PageNumber - 5;
+                    int endPage = Model.PageViewModel.PageNumber + 5;
+
+                    startPage = Math.Max(startPage, 1);
+                    endPage = Math.Min(endPage, Model.PageViewModel.TotalPages);
+
+                    for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == Model.PageViewModel.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { Page = i, Name = Model.FilterViewModel.SelectedName, Company = Model.FilterViewModel.SelectedId, SortOrder = Model.SortViewModel.Current })">@i</a>
+                        </li>
+                    }
+                }
+            </ul>
+        </nav>
+    </div>
+
 </div>
 
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">

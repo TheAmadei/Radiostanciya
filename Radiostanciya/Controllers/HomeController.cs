@@ -5,38 +5,63 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Radiostanciya.Extensions;
 using Radiostanciya.Models;
+using Radiostanciya.ViewModels.DashboardViewModels;
 
 namespace Radiostanciya.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        ApplContext db;
+
+        public HomeController(ApplContext db)
         {
-            return View();
+            this.db = db;
+        }
+        public IActionResult Index(int? offset)
+        {
+            offset ??= 0;
+
+            DateTime today = DateTime.Now.AddDays(offset.Value);
+            DateTime yesterday = today.AddDays(-1);
+            DateTime tomorrow = today.AddDays(1);
+
+            var yesterdayTranslations = db.Schedules
+                .Include(s => s.Employee)
+                .Include(s => s.Record)
+                .Where(t => t.Date != null && t.Date.Date == yesterday.Date)
+                .ToList();
+
+            var todayTranslations = db.Schedules
+                .Include(s => s.Employee)
+                .Include(s => s.Record)
+                .Where(t => t.Date != null && t.Date.Date == today.Date)
+                .ToList();
+
+            var tomorrowTranslations = db.Schedules
+                .Include(s => s.Employee)
+                .Include(s => s.Record)
+                .Where(t => t.Date != null && t.Date.Date == tomorrow.Date)
+                .ToList();
+
+            var viewModel = new DashboardViewModel
+            {
+                YesterdayDate = yesterday,
+                Yesterday = yesterdayTranslations,
+                TodayDate = today,
+                Today = todayTranslations,
+                TomorrowDate = tomorrow,
+                Tomorrow = tomorrowTranslations
+            };
+
+            return View(viewModel);
         }
 
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
 
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 2 * 15 + 240, Location = ResponseCacheLocation.None, NoStore = true)]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

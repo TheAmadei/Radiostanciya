@@ -25,6 +25,9 @@
         <label class="control-label">Сотрудник: </label>
         @Html.TextBox("Emp", Model.FilterViewModel.SelectedName,
                 htmlAttributes: new { @class = "form-control" })
+        <label class="control-label">Жанр: </label>
+        @Html.TextBox("ganre", Model.FilterViewModel.SelectedName,
+            htmlAttributes: new { @class = "form-control" })
 
 
         <input type="submit" value="Поиск" class="btn btn-default" />

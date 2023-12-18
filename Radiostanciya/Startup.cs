@@ -9,6 +9,7 @@ using Radiostanciya.Middleware;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Radiostanciya.Data;
+using Microsoft.Extensions.Hosting;
 
 namespace Radiostanciya
 {
@@ -31,6 +32,18 @@ namespace Radiostanciya
                 .AddEntityFrameworkStores<ApplContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddDistributedMemoryCache();
+            services.AddMvc(options =>
+            {
+                options.CacheProfiles.Add("Caching", new CacheProfile
+                {
+                    Duration = 2 * 15 + 240,  // Время в секундах, на которое кэшируется ответ
+                    Location = ResponseCacheLocation.Any,
+                    NoStore = false
+                });
+            });
+
+
             services.AddSession();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -48,15 +61,15 @@ namespace Radiostanciya
 
             services.AddResponseCaching(options =>
             {
-                options.SizeLimit = 100; // установите размер кэша по необходимости
                 options.UseCaseSensitivePaths = true;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -75,11 +88,13 @@ namespace Radiostanciya
             app.UseResponseCaching();
             app.UseCookiePolicy();
             app.UseDbInitializer();
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
         }

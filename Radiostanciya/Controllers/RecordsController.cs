@@ -22,7 +22,8 @@ namespace Radiostanciya.Controllers
             this.db = db;
         }
 
-        public async Task<IActionResult> Index(int? id, string name, string per, string album, string emp,  int page = 0,
+        [ResponseCache(CacheProfileName = "Caching")]
+        public async Task<IActionResult> Index(int? id, string name, string per, string album, string emp, string ganre,  int page = 0,
             SortState sortOrder = SortState.IdAsc)
         {
             ViewData["IsAdmin"] = User.IsInRole("Admin");
@@ -53,6 +54,10 @@ namespace Radiostanciya.Controllers
             if (!String.IsNullOrEmpty(emp))
             {
                 source = source.Where(p => db.Employees.First(r => r.Id == p.EmployeeId).Name.Contains(emp));
+            }
+            if (!String.IsNullOrEmpty(ganre))
+            {
+                source = source.Where(p => db.Genres.First(r => r.Id == p.GenreId).Name.Contains(ganre));
             }
 
 

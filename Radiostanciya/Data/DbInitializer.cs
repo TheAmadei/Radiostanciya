@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,125 +12,133 @@ namespace Radiostanciya.Data
     {
         public static void Initialize(ApplContext db)
         {
+            Console.WriteLine("Инициализация базы данных начата.");
             db.Database.EnsureCreated();
             if (db.Records.Any()) { return; }
 
-            int employeesNumber = 30;
+            int positionsNumber = 10;
             int genresNumber = 20;
             int performersNumber = 10;
-            int positionsNumber = 10;
-            int recordsNumber = 30;
-            int scheudulesNumber = 20;
-            string voc = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
-            Random random = new Random(1);
+            int employeesNumber = 100;
+            int recordsNumber = 10000;
+            int schedulesNumber = 10000;
 
+            // Заполняем таблицу Genres
             for (int id = 1; id <= genresNumber; id++)
             {
                 db.Genres.Add(
                     new Genre
                     {
-                        Name = GenRandomString(voc, 10),
-                        Description = GenRandomString(voc, 10)
+                        Name = $"Genre_{id}",
+                        Description = $"Description for Genre_{id}"
                     });
             }
-
             db.SaveChanges();
 
+            // Заполняем таблицу Performers
             for (int id = 1; id <= performersNumber; id++)
             {
                 db.Performers.Add(
                     new Performer
                     {
-                        Name = GenRandomString(voc, 10),
-                        Description = GenRandomString(voc, 10),
+                        Name = $"Performer_{id}",
+                        Description = $"Description for Performer_{id}",
                     });
             }
-
             db.SaveChanges();
 
+            // Заполняем таблицу Positions
             for (int id = 1; id <= positionsNumber; id++)
             {
                 db.Positions.Add(
                     new Position
                     {
-                        Name = GenRandomString(voc, 10),
-                        Requirements  = GenRandomString(voc, 10),
-                        Responsibilities = GenRandomString(voc, 10),
-                        Salary = random.Next(100, 3000)
-                    }) ;
-            }
-            db.SaveChanges();
-
-            for (int id = 1; id <= employeesNumber; id++)
-            {
-                db.Employees.Add(
-                    new Employee
-                    {
-                        Name = GenRandomString(voc, 10),
-                        Age = random.Next(18, 60),
-                        Passport = GenRandomString(voc, 10),
-                        Address = GenRandomString(voc, 10),
-                        PositionId = random.Next(1, positionsNumber - 1),
-                        Sex = (random.Next(1, 2) == 1) ? "Female" : "Male",
+                        Name = $"Position_{id}",
+                        Requirements = $"Requirements for Position_{id}",
+                        Responsibilities = $"Responsibilities for Position_{id}",
+                        Salary = id * 1000
                     });
             }
             db.SaveChanges();
 
-            for (int id = 1; id <= scheudulesNumber; id++)
+
+            // Заполняем таблицу Employees
+            var positions = db.Positions.ToList();
+
+            if (positions.Count >= positionsNumber)
             {
-                Schedule sc = new Schedule
+                for (int id = 1; id <= employeesNumber; id++)
                 {
-                    Date = new DateTime(random.Next(2010, 2020), random.Next(1, 12), random.Next(1, 28)),
-                    Start = new DateTime(2000, 1, 1),
-                    End = new DateTime(2000, 1, 1),
-                    EmployeeId = random.Next(1, employeesNumber - 1),
-                } ;
-            sc.Start.AddHours(random.Next(0, 24));
-            sc.Start.AddMinutes(random.Next(0, 60));
-            sc.End.AddHours(random.Next(0, 24));
-            sc.End.AddMinutes(random.Next(0, 60));
-            db.Schedules.Add(sc);
-                
-
+                    int _id = id % positionsNumber;
+                    db.Employees.Add(
+                        new Employee
+                        {
+                            Name = $"Employee_{id}",
+                            Age = 25 + id % 10,
+                            Passport = $"Passport_{id}",
+                            Address = $"Address_{id}",
+                            PositionId = positions[_id].Id,
+                            Position = positions[_id],
+                            Sex = (id % 2 == 0) ? "Female" : "Male",
+                        });
+                }
+                db.SaveChanges();
             }
-            db.SaveChanges();
+            else
+            {
+                // Обработка случая, когда positions.Count меньше positionsNumber
+                Console.WriteLine("Ошибка: Недостаточно данных в таблице Positions.");
+            }
 
+
+            var employees = db.Employees.ToList();
+            var genres = db.Genres.ToList();
+            var performers = db.Performers.ToList();
             for (int id = 1; id <= recordsNumber; id++)
             {
+                int _idEmp = id % employeesNumber;
+                int _idGenres = id % genresNumber;
+                int _idPerf = id % performersNumber;
                 db.Records.Add(
                     new Record
                     {
-                        Age = random.Next(1800, 2020),
-                        Album = GenRandomString(voc, 10),
-                        EmployeeId = random.Next(1, employeesNumber - 1),
-                        Name = GenRandomString(voc, 10),
-                        GenreId = random.Next(1, genresNumber - 1),
-                        PerformerId = random.Next(1, performersNumber - 1),
-                        RecordDate = new DateTime(random.Next(2010, 2020), random.Next(1, 12), random.Next(1, 28)),
-                        TimeMin = random.Next(10, 360),
-                    }) ;
+                        Age = 1800 + id % 200,
+                        Album = $"Album_{id}",
+                        EmployeeId = employees[_idEmp].Id,
+                        Employee = employees[_idEmp],
+                        Name = $"Record_{id}",
+                        GenreId = genres[_idGenres].Id,
+                        Genre = genres[_idGenres],
+                        PerformerId = performers[_idPerf].Id,
+                        Performer = performers[_idPerf],
+                        RecordDate = new DateTime(2010 + id % 10, id % 12 + 1, id % 28 + 1),
+                        TimeMin = id % 350,
+                    });
             }
             db.SaveChanges();
 
-        }
-        static string GenRandomString(string Alphabet, int Length)
-        {
-            Random rnd = new Random();
-            //объект StringBuilder с заранее заданным размером буфера под результирующую строку
-            StringBuilder sb = new StringBuilder(Length - 1);
-            //переменную для хранения случайной позиции символа из строки Alphabet
-            int Position = 0;
-            string ret = "";
-            for (int i = 0; i < Length; i++)
+            // Заполняем таблицу Schedules
+            var records = db.Records.ToList();
+            for (int id = 1; id <= schedulesNumber; id++)
             {
-                //получаем случайное число от 0 до последнего
-                //символа в строке Alphabet
-                Position = rnd.Next(0, Alphabet.Length - 1);
-                //добавляем выбранный символ в объект
-                //StringBuilder
-                ret = ret + Alphabet[Position];
+                int _idEmp = id % employeesNumber;
+                int _idRec = id % recordsNumber;
+                db.Schedules.Add(
+                    new Schedule
+                    {
+                        Date = new DateTime(2010 + id % 10, id % 12 + 1, id % 28 + 1),
+                        Start = new DateTime(2000, 1, 1).AddHours(id % 24).AddMinutes(id % 60),
+                        End = new DateTime(2000, 1, 1).AddHours(id % 24 + 2).AddMinutes(id % 60),
+                        EmployeeId = employees[_idEmp].Id,
+                        Employee = employees[_idEmp],
+                        RecordId = records[_idRec].Id,
+                        Record = records[_idRec]
+                    });
             }
-            return ret;
+            db.SaveChanges();
+
+
+            Console.WriteLine("Инициализация базы данных завершена.");
         }
     }
 }

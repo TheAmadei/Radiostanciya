@@ -23,6 +23,7 @@ namespace Radiostanciya.Controllers
             this.db = db;
         }
 
+        [ResponseCache(CacheProfileName = "Caching")]
         public async Task<IActionResult> Index(int? id, string name, string record, int page = 0,
             SortState sortOrder = SortState.IdAsc)
         {
