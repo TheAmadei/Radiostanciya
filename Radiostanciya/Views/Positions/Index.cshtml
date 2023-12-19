@@ -10,6 +10,12 @@
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#FilterModal">
     Фильтры
 </button>
+@if (User.IsInRole("Admin"))
+{
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModal">
+        Добавить
+    </button>
+}
 <div class="modal" id="FilterModal" tabindex="-1" role="dialog" aria-labelledby="FilterModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -221,6 +227,51 @@
     </div>
 </div>
 
+<div class="modal" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Добавление записи</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addForm">
+                    <table class="table">
+                        <tr>
+                            <td><label class="control-label">Номер</label></td>
+                            <td colspan="2"><input type="text" name="number" readonly class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Название</label></td>
+                            <td colspan="2"><input type="text" name="name" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Оклад</label></td>
+                            <td colspan="2"><input type="text" name="sal" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Обязанности</label></td>
+                            <td colspan="2"><input type="text" name="res" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Требования</label></td>
+                            <td colspan="2"><input type="text" name="req" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="button" value="Добавить" class="btn btn-success" /></td>
+                        </tr>
+                    </table>
+                    <div id="msg_display"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script type="text/javascript">
     $(function () {
@@ -252,6 +303,35 @@
             updateFormFields($(this));
             $(this).addClass('selected');
             localStorage.setItem('selectedPositionId', $(this).children('td')[0].textContent);
+        });
+
+        $('button[data-target="#addModal"]').click(function () {
+            // Очистка полей формы перед открытием модального окна
+            $('#addModal input[name="name"]').val('');
+            $('#addModal input[name="sal"]').val('');
+            $('#addModal input[name="res"]').val('');
+            $('#addModal input[name="req"]').val('');
+
+            // Открытие модального окна
+            $('#AddModal').modal('show');
+        });
+        // Обработчик кнопки "Добавить" в модальном окне добавления записи
+        $('#addModal input[type="button"]').click(function () {
+            // Ваш код добавления записи, например:
+            $.getJSON('/Positions/Insert', {
+                Name: $('#addModal input[name="name"]').val(),
+                sal: $('#addModal input[name="sal"]').val(),
+                res: $('#addModal input[name="res"]').val(),
+                req: $('#addModal input[name="req"]').val(),
+            })
+                .done(function () {
+                    // Добавьте этот блок кода
+                    $('#AddModal').modal('hide');
+                    location.reload();
+                })
+                .fail(function () {
+                    alert('Произошла ошибка при добавлении записи.');
+                });
         });
 
         $('input[name=add]').click(function () {

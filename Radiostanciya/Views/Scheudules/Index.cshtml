@@ -6,13 +6,17 @@
 @{
     ViewData["Title"] = "Расписание";
 }
-<head>
-    <link rel="stylesheet" href="~/css/site.css" />
-</head>
 <h1>Расписание</h1>
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#FilterModal">
     Фильтры
-</button>
+</button></br>
+
+@if (User.IsInRole("Admin"))
+{
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModal">
+        Добавить
+    </button>
+}
 <div class="modal" id="FilterModal" tabindex="-1" role="dialog" aria-labelledby="FilterModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -259,6 +263,70 @@
     </div>
 </div>
 
+<div class="modal" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Добавление записи</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addForm">
+                    <table class="table">
+                        <tr>
+                            <td><label class="control-label">Номер</label></td>
+                            <td colspan="2"><input type="text" name="number" readonly class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Сотрудник</label></td>
+                            <td colspan="2">
+                                <select name="emp">
+                                    @foreach (Employee b in Model.Employees)
+                                    {
+                                        <option id="@b.Id">@b.Name</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Запись</label></td>
+                            <td colspan="2">
+                                <select name="record">
+                                    @foreach (Record b in Model.Records)
+                                    {
+                                        <option id="@b.Id">@b.Name</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Дата</label></td>
+                            <td colspan="2"><input type="date" name="d" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Время начала</label></td>
+                            <td colspan="2"><input type="time" name="start" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Время окончания</label></td>
+                            <td colspan="2"><input type="time" name="end" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="button" value="Добавить" class="btn btn-success" /></td>
+                        </tr>
+                    </table>
+                    <div id="msg_display"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
     $(function () {
         function setSelectedRecord() {
@@ -290,6 +358,38 @@
             updateFormFields($(this));
             $(this).addClass('selected');
             localStorage.setItem('selectedScheduleId', $(this).children('td')[0].textContent);
+        });
+
+        $('button[data-target="#addModal"]').click(function () {
+            // Очистка полей формы перед открытием модального окна
+            $('#addModal input[name="start"]').val('');
+            $('#addModal input[name="record"]').val('');
+            $('#addModal input[name="end"]').val('');
+            $('#addModal input[name="emp"]').val('');
+            $('#addModal input[name="d"]').val('');
+
+            // Открытие модального окна
+            $('#AddModal').modal('show');
+        });
+
+        // Обработчик кнопки "Добавить" в модальном окне добавления записи
+        $('#addModal input[type="button"]').click(function () {
+            // Ваш код добавления записи, например:
+            $.getJSON('/Scheudules/Insert', {
+                end: $('#addModal input[name="end"]').val(),
+                date: $('#addModal input[name="d"]').val(),
+                start: $('#addModal input[name="start"]').val(),
+                empId: $('#addModal select[name="emp"]').find(":selected").attr("id"),
+                recordId: $('#addModal select[name="record"]').find(":selected").attr("id")
+            })
+                .done(function () {
+                    // Добавьте этот блок кода
+                    $('#AddModal').modal('hide');
+                    location.reload();
+                })
+                .fail(function () {
+                    alert('Произошла ошибка при добавлении записи.');
+                });
         });
 
         $('input[name=add]').click(function () {

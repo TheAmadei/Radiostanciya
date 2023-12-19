@@ -8,33 +8,16 @@
 }
 
 <h1>Записи</h1>
-
-@* <form method="get">
-    <div class="form-inline">
-
-        <label class="control-label">Название: </label>
-        @Html.TextBox("Name", Model.FilterViewModel.SelectedName,
-                htmlAttributes: new { @class = "form-control" })
-        <label class="control-label">Исполнитель: </label>
-        @Html.TextBox("Per", Model.FilterViewModel.SelectedName,
-                htmlAttributes: new { @class = "form-control" })
-        <label class="control-label">Альбом: </label>
-        @Html.TextBox("Album", Model.FilterViewModel.SelectedName,
-                htmlAttributes: new { @class = "form-control" })<br>
-        <label class="control-label">Сотрудник: </label>
-        @Html.TextBox("Emp", Model.FilterViewModel.SelectedName,
-                htmlAttributes: new { @class = "form-control" })
-        <label class="control-label">Жанр: </label>
-        @Html.TextBox("ganre", Model.FilterViewModel.SelectedName,
-            htmlAttributes: new { @class = "form-control" })
-
-
-        <input type="submit" value="Поиск" class="btn btn-default" />
-    </div>
-</form> *@
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#FilterModal">
     Фильтры
-</button>
+</button></br>
+
+@if (User.IsInRole("Admin"))
+{
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModal">
+        Добавить
+    </button>
+}
 <div class="modal" id="FilterModal" tabindex="-1" role="dialog" aria-labelledby="FilterModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -350,6 +333,93 @@
     </div>
 </div>
 
+<div class="modal" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Добавление записи</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addForm">
+                    <table class="table">
+                        <tr>
+                            <td><label class="control-label">Номер</label></td>
+                            <td colspan="2"><input type="text" name="number" readonly class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Название</label></td>
+                            <td colspan="2"><input type="text" name="name" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Исполнитель</label></td>
+                            <td colspan="2">
+                                <select name="per">
+                                    @foreach (Performer b in Model.Performers)
+                                    {
+                                        <option id="@b.Id">@b.Name</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Альбом</label></td>
+                            <td colspan="2"><input type="text" name="album" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Год</label></td>
+                            <td colspan="2"><input type="number" name="year" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Жанр</label></td>
+                            <td colspan="2">
+                                <select name="genre">
+                                    @foreach (Genre b in Model.Genres)
+                                    {
+                                        <option id="@b.Id">@b.Name</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Дата записи</label></td>
+                            <td colspan="2"><input type="date" name="d" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Продолжительность</label></td>
+                            <td colspan="2"><input type="number" name="t" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Сотрудник</label></td>
+                            <td colspan="2">
+                                <select name="emp">
+                                    @foreach (Employee b in Model.Employees)
+                                    {
+                                        <option id="@b.Id">@b.Name</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Рейтинг</label></td>
+                            <td colspan="2"><input type="number" name="rating" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="button" value="Добавить" class="btn btn-success" /></td>
+                        </tr>
+                    </table>
+                    <div id="msg_display"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
     $(function () {
         function setSelectedRecord() {
@@ -385,6 +455,48 @@
             updateFormFields($(this));
             $(this).addClass('selected');
             localStorage.setItem('selectedRecordId', $(this).children('td')[0].textContent);
+        });
+
+        $('button[data-target="#addModal"]').click(function () {
+            // Очистка полей формы перед открытием модального окна
+            $('#addModal input[name="number"]').val('');
+            $('#addModal input[name="name"]').val('');
+            $('#addModal input[name="per"]').val('');
+            $('#addModal input[name="album"]').val('');
+            $('#addModal input[name="year"]').val('');
+            $('#addModal select[name="genre"]').val('');
+            $('#addModal select[name="d"]').val('');
+            $('#addModal select[name="t"]').val('');
+            $('#addModal select[name="emp"]').val('');
+            $('#addModal select[name="rating"]').val('');
+
+            // Открытие модального окна
+            $('#AddModal').modal('show');
+        });
+
+        // Обработчик кнопки "Добавить" в модальном окне добавления записи
+        $('#addModal input[type="button"]').click(function () {
+            // Ваш код добавления записи, например:
+            $.getJSON('/Records/Insert', {
+                date: $('#addModal input[name="d"]').val(),
+                time: $('#addModal input[name="t"]').val(),
+                rating: $('#addModal input[name="rating"]').val(),
+                end: $('#addModal input[name="end"]').val(),
+                year: $('#addModal input[name="year"]').val(),
+                album: $('#addModal input[name="album"]').val(),
+                name: $('#addModal input[name="name"]').val(),
+                genreId: $('#addModal select[name="genre"]').find(":selected").attr("id"),
+                performerId: $('#addModal select[name="per"]').find(":selected").attr("id"),
+                empId: $('#addModal select[name="emp"]').find(":selected").attr("id"),
+            })
+                .done(function () {
+                    // Добавьте этот блок кода
+                    $('#AddModal').modal('hide');
+                    location.reload();
+                })
+                .fail(function () {
+                    alert('Произошла ошибка при добавлении записи.');
+                });
         });
 
         $('input[name=add]').click(function () {

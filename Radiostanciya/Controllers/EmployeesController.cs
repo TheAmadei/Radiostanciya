@@ -105,7 +105,7 @@ namespace Radiostanciya.Controllers
                 Sex = sex,
                 Address = address,
                 Passport = passport,
-                PositionId =posId
+                PositionId = posId
             };
             db.Employees.Add(p);
             db.SaveChanges();

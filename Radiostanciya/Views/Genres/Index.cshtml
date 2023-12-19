@@ -11,6 +11,13 @@
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#FilterModal">
     Фильтры
 </button>
+@if (User.IsInRole("Admin"))
+{
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModal">
+        Добавить
+    </button>
+    
+}
 <div class="modal" id="FilterModal" tabindex="-1" role="dialog" aria-labelledby="FilterModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -207,6 +214,43 @@
     </div>
 </div>
 
+<div class="modal" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Добавление записи</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addForm">
+                    <table class="table">
+                        <tr>
+                            <td><label class="control-label">Номер</label></td>
+                            <td colspan="2"><input type="text" name="number" readonly class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Название</label></td>
+                            <td colspan="2"><input type="text" name="name" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><label class="control-label">Описание</label></td>
+                            <td colspan="2"><input type="text" name="desc" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="button"  value="Добавить" class="btn btn-success" /></td>
+                        </tr>
+                    </table>
+                    <div id="msg_display"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     $(function () {
         function setSelectedRecord() {
@@ -242,12 +286,39 @@
                 return;
             }
             $.getJSON('/Genres/Insert?name=' + $('input[name=name]').val() +
-                '&description=' + $('input[name=desc]').val(), null, function () {
+                '&description=' + 
+                $('input[name=desc]').val(), null, function () {
                     // Добавьте этот блок кода
                     $('#editModal').modal('hide');
                     location.reload();
                 });
             getMsg('Добавлено');
+        });
+
+        $('button[data-target="#addModal"]').click(function () {
+            // Очистка полей формы перед открытием модального окна
+            $('#addModal input[name="name"]').val('');
+            $('#addModal input[name="desc"]').val('');
+
+            // Открытие модального окна
+            $('#AddModal').modal('show');
+        });
+
+        // Обработчик кнопки "Добавить" в модальном окне добавления записи
+        $('#addModal input[type="button"]').click(function () {
+            // Ваш код добавления записи, например:
+            $.getJSON('/Genres/Insert', {
+                Name: $('#addModal input[name="name"]').val(),
+                description: $('#addModal input[name="desc"]').val(),
+            })
+                .done(function () {
+                    // Добавьте этот блок кода
+                    $('#AddModal').modal('hide');
+                    location.reload();
+                })
+                .fail(function () {
+                    alert('Произошла ошибка при добавлении записи.');
+                });
         });
 
         $('input[name=del]').click(function () {
