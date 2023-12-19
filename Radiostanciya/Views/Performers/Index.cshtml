@@ -42,12 +42,6 @@
 </div>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <br />
-<div class="cell">
-    @if (User.IsInRole("Admin"))
-    {
-        <button id="editButton" class="btn btn-primary">Управление</button>
-    }
-</div>
 <div class="container-xl">
     <table class="table table-striped table-hover mx-auto" id="data">
         <thead>
@@ -70,7 +64,17 @@
         <tbody>
             @foreach (Performer u in Model.Performers)
             {
-                <tr><td>@u.Id</td><td>@u.Name</td><td>@u.Description</td></tr>
+                <tr>
+                    <td>@u.Id</td>
+                    <td>@u.Name</td>
+                    <td>@u.Description</td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <td>
+                            <button class="editButton btn btn-primary">Управление</button>
+                        </td>
+                    }
+                </tr>
             }
         </tbody>
     </table>
@@ -177,9 +181,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editModalLabel">Редактирование/Удаление/Добавление записи</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="editForm" name="edit">
@@ -198,9 +200,8 @@
                             <td colspan="2"><input type="text" name="desc" class="form-control" /></td>
                         </tr>
                         <tr>
-                            <td><input type="button" name="add" value="Добавить" class="btn btn-default" /></td>
-                            <td><input type="button" name="del" value="Удалить" class="btn btn-default" /></td>
-                            <td><input type="button" name="upd" value="Обновить" class="btn btn-default" /></td>
+                            <td><input type="button" name="del" value="Удалить" class="btn btn-danger" /></td>
+                            <td><input type="button" name="upd" value="Обновить" class="btn btn-warning" /></td>
                         </tr>
                     </table>
                     <div id="msg_display"></div>
@@ -218,9 +219,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addModalLabel">Добавление записи</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="addForm">
@@ -305,21 +304,6 @@
                 .fail(function () {
                     alert('Произошла ошибка при добавлении записи.');
                 });
-        });
-
-        $('input[name=add]').click(function () {
-            // Проверка на админа
-            if (!isAdmin()) {
-                alert("Доступ запрещен. Только администраторы могут выполнять данное действие.");
-                return;
-            }
-            $.getJSON('/Performers/Insert?name=' + $('input[name=name]').val() +
-                '&description=' + $('input[name=desc]').val(), null, function () {
-                    // Добавьте этот блок кода
-                    $('#editModal').modal('hide');
-                    location.reload();
-                });
-            getMsg('Добавлено');
         });
 
         $('input[name=del]').click(function () {
