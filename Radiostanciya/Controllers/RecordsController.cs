@@ -28,7 +28,7 @@ namespace Radiostanciya.Controllers
         {
             ViewData["IsAdmin"] = User.IsInRole("Admin");
 
-            int pageSize = 10;  // количество элементов на странице
+            int pageSize = 25;  // количество элементов на странице
 
             IQueryable<Record> source = db.Records;
             if (page == 0)

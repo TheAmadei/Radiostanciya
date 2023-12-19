@@ -6,27 +6,10 @@
 @{
     ViewData["Title"] = "Записи";
 }
-<head>
-    <style>
-        .badge-success {
-            color: #fff;
-            background-color: #28a745
-        }
-
-        .badge-danger {
-            color: #fff;
-            background-color: #dc3545
-        }
-
-        .badge-warning {
-            color: #212529;
-            background-color: #ffc107
-        }
-    </style>
-</head>
 
 <h1>Записи</h1>
-<form method="get">
+
+@* <form method="get">
     <div class="form-inline">
 
         <label class="control-label">Название: </label>
@@ -48,30 +31,70 @@
 
         <input type="submit" value="Поиск" class="btn btn-default" />
     </div>
-</form>
+</form> *@
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#FilterModal">
+    Фильтры
+</button>
+<div class="modal" id="FilterModal" tabindex="-1" role="dialog" aria-labelledby="FilterModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="FilterModalLabel">Фильтры</h4>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="get">
+                    <label class="control-label">Название: </label>
+                    @Html.TextBox("Name", Model.FilterViewModel.SelectedName,
+                             htmlAttributes: new { @class = "form-control" })
+                    <label class="control-label">Исполнитель: </label>
+                    @Html.TextBox("Per", Model.FilterViewModel.SelectedName,
+                             htmlAttributes: new { @class = "form-control" })
+                    <label class="control-label">Альбом: </label>
+                    @Html.TextBox("Album", Model.FilterViewModel.SelectedName,
+                             htmlAttributes: new { @class = "form-control" })<br>
+                    <label class="control-label">Сотрудник: </label>
+                    @Html.TextBox("Emp", Model.FilterViewModel.SelectedName,
+                             htmlAttributes: new { @class = "form-control" })
+                    <label class="control-label">Жанр: </label>
+                    @Html.TextBox("ganre", Model.FilterViewModel.SelectedName,
+                             htmlAttributes: new { @class = "form-control" })
+                    <div class="form-inline">
+                        <input type="submit" value="Поиск" class="btn btn-info" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-<div class="cell">
-    <table class="table" id="data">
+
+<div class="container-xl">
+    <table class="table table-striped table-hover" id="data">
         <thead>
             <tr>
                 <th>
-                    <a asp-action="Index"
+                    <a class="text-decoration-none" asp-action="Index"
                        asp-route-sortOrder="@(Model.SortViewModel.IdSort)"
                        asp-route-name="@(Model.FilterViewModel.SelectedName)"
                        asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Номер</a>
                 </th>
                 <th>
-                    <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.NameSort)"
+                    <a class="text-decoration-none" asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.NameSort)"
                        asp-route-name="@(Model.FilterViewModel.SelectedName)"
                        asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Название</a>
                 </th>
                 <th>
-                    <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.PerformerSort)"
+                    <a class="text-decoration-none" asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.PerformerSort)"
                        asp-route-name="@(Model.FilterViewModel.SelectedName)"
                        asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Исполнитель</a>
                 </th>
                 <th>
-                    <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.AlbumSort)"
+                    <a class="text-decoration-none" asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.AlbumSort)"
                        asp-route-name="@(Model.FilterViewModel.SelectedName)"
                        asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Альбом</a>
                 </th>
@@ -79,12 +102,12 @@
                     Год
                 </th>
                 <th>
-                    <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.GenreSort)"
+                    <a class="text-decoration-none" asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.GenreSort)"
                        asp-route-name="@(Model.FilterViewModel.SelectedName)"
                        asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Жанр</a>
                 </th>
                 <th>
-                    <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.DateSort)"
+                    <a class="text-decoration-none" asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.DateSort)"
                        asp-route-name="@(Model.FilterViewModel.SelectedName)"
                        asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Дата записи</a>
                 </th>
@@ -92,7 +115,7 @@
                     Продолжительность (мин)
                 </th>
                 <th>
-                    <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.EmployeeSort)"
+                    <a class="text-decoration-none" asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.EmployeeSort)"
                        asp-route-name="@(Model.FilterViewModel.SelectedName)"
                        asp-route-Organization="@(Model.FilterViewModel.SelectedId)">Сотрудник</a>
                 </th>
@@ -138,20 +161,112 @@
             }
         </tbody>
     </table>
-    <page-link page-model="@Model.PageViewModel" page-action="Index"
-               page-url-name="@(Model.FilterViewModel.SelectedName)"
-               page-url-company="@(Model.FilterViewModel.SelectedId)"
-               page-url-sortorder="@(Model.SortViewModel.Current)"></page-link>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            @if (Model.PageViewModel.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { page = Model.PageViewModel.PageNumber - 1, name = Model.FilterViewModel.SelectedName, company = Model.FilterViewModel.SelectedId, sortOrder = Model.SortViewModel.Current })" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link" aria-hidden="true">&laquo;</span>
+                </li>
+            }
+
+            @if (Model.PageViewModel.TotalPages <= 10)
+            {
+                @for (var i = 1; i <= Model.PageViewModel.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageViewModel.PageNumber ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = i, name = Model.FilterViewModel.SelectedName, company = Model.FilterViewModel.SelectedId, sortOrder = Model.SortViewModel.Current })">@i</a>
+                    </li>
+                }
+            }
+            else
+            {
+                @if (Model.PageViewModel.PageNumber <= 5)
+                {
+                    for (var i = 1; i <= 7; i++)
+                    {
+                        <li class="page-item @(i == Model.PageViewModel.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = i, name = Model.FilterViewModel.SelectedName, company = Model.FilterViewModel.SelectedId, sortOrder = Model.SortViewModel.Current })">@i</a>
+                        </li>
+                    }
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { page = Model.PageViewModel.TotalPages, name = Model.FilterViewModel.SelectedName, company = Model.FilterViewModel.SelectedId, sortOrder = Model.SortViewModel.Current })">@Model.PageViewModel.TotalPages</a>
+                    </li>
+                }
+                else if (Model.PageViewModel.PageNumber > Model.PageViewModel.TotalPages - 5)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { page = 1, name = Model.FilterViewModel.SelectedName, company = Model.FilterViewModel.SelectedId, sortOrder = Model.SortViewModel.Current })">1</a>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                    for (var i = Model.PageViewModel.TotalPages - 6; i <= Model.PageViewModel.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageViewModel.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = i, name = Model.FilterViewModel.SelectedName, company = Model.FilterViewModel.SelectedId, sortOrder = Model.SortViewModel.Current })">@i</a>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { page = 1, name = Model.FilterViewModel.SelectedName, company = Model.FilterViewModel.SelectedId, sortOrder = Model.SortViewModel.Current })">1</a>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                    for (var i = Model.PageViewModel.PageNumber - 2; i <= Model.PageViewModel.PageNumber + 2; i++)
+                    {
+                        <li class="page-item @(i == Model.PageViewModel.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = i, name = Model.FilterViewModel.SelectedName, company = Model.FilterViewModel.SelectedId, sortOrder = Model.SortViewModel.Current })">@i</a>
+                        </li>
+                    }
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { page = Model.PageViewModel.TotalPages, name = Model.FilterViewModel.SelectedName, company = Model.FilterViewModel.SelectedId, sortOrder = Model.SortViewModel.Current })">@Model.PageViewModel.TotalPages</a>
+                    </li>
+                }
+            }
+
+            @if (Model.PageViewModel.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { page = Model.PageViewModel.PageNumber + 1, name = Model.FilterViewModel.SelectedName, company = Model.FilterViewModel.SelectedId, sortOrder = Model.SortViewModel.Current })" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link" aria-hidden="true">&raquo;</span>
+                </li>
+            }
+        </ul>
+    </nav>
 </div>
 
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal modal-fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editModalLabel">Редактирование/Удаление/Добавление записи</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <!-- Форма для редактирования/удаления записи -->
@@ -220,9 +335,9 @@
                             <td colspan="2"><input type="number" name="rating" class="form-control" /></td>
                         </tr>
                         <tr>
-                            <td><input type="button" name="add" value="Добавить" class="btn btn-default" /></td>
-                            <td><input type="button" name="del" value="Удалить" class="btn btn-default" /></td>
-                            <td><input type="button" name="upd" value="Обновить" class="btn btn-default" /></td>
+                            <td><input type="button" name="add" value="Добавить" class="btn btn-success" /></td>
+                            <td><input type="button" name="del" value="Удалить" class="btn btn-danger" /></td>
+                            <td><input type="button" name="upd" value="Обновить" class="btn btn-warning" /></td>
                         </tr>
                     </table>
                     <div id="msg_display"></div>
@@ -260,6 +375,7 @@
             $('input[name=d]').val(selectedRow.children('td')[6].textContent);
             $('input[name=t]').val(selectedRow.children('td')[7].textContent);
             $('select[name=emp]').val(selectedRow.children('td')[8].textContent);
+            $('select[name=rating]').val(selectedRow.children('td')[9].textContent);
         }
 
         setSelectedRecord();
@@ -291,7 +407,7 @@
                 '&performerId=' + $('select[name=per]').find(":selected").attr("id")
                 , null, function () {
                     // Добавьте этот блок кода
-                    $('.editModal').modal('hide');
+                    $('#editModal').modal('hide');
                     location.reload();
                 });
             getMsg('Добавлено');
@@ -307,7 +423,7 @@
             // Ваш код для удаления записи
             $.getJSON('/Records/Delete?id=' + $('input[name=number]').val(), null, function () {
                 // Добавьте этот блок кода
-                $('.editModal').modal('hide');
+                $('#editModal').modal('hide');
                 location.reload();
             });
             $('.selected').remove();
@@ -334,7 +450,7 @@
                 '&genreId=' + $('select[name=genre]').find(":selected").attr("id") +
                 '&performerId=' + $('select[name=per]').find(":selected").attr("id"), null, function () {
                     // Добавьте этот блок кода
-                    $('.editModal').modal('hide');
+                    $('#editModal').modal('hide');
                     location.reload();
                 });
             $('.selected').children('td')[1].textContent = $('input[name=name]').val();
@@ -345,6 +461,7 @@
             $('.selected').children('td')[6].textContent = $('input[name=d]').val();
             $('.selected').children('td')[7].textContent = $('input[name=t]').val();
             $('.selected').children('td')[8].textContent = $('select[name=emp]').val();
+            $('.selected').children('td')[9].textContent = $('select[name=rating]').val();
             getMsg('Обновлено');
         });
 
